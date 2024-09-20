@@ -26,11 +26,15 @@ with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence
             w = int(w * W)
             h = int(h * H)
 
-            img = cv2.rectangle(img, (x1, y1), (x1 + w, y1 + h), (0, 255, 0), 10)
+            #img = cv2.rectangle(img, (x1, y1), (x1 + w, y1 + h), (0, 255, 0), 10)
+
+            #blur faces
+            #applying blur on all picture
+            #img = cv2.blur(img, (50, 50))
+            #applying blur only on face
+            img[y1:y1 + h, x1:x1 + w, :] = cv2.blur(img[y1:y1 + h, x1:x1 + w, :], (30, 30))
 
     cv2.imshow('img', img)
     cv2.waitKey(0)
-
-#blur faces
 
 #save image
