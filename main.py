@@ -4,8 +4,10 @@ import cv2
 import mediapipe as mp
 
 def process_img(img, face_detection):
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
+    H, W, _ = img.shape
+
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     out = face_detection.process(img_rgb)
 
     if out.detections is not None:
@@ -32,8 +34,8 @@ def process_img(img, face_detection):
 
 
 args = argparse.ArgumentParser()
-args.add_argument("--mode", default='image')
-args.add_argument("--filePath", default='./data/testImg.png')
+args.add_argument("--mode", default='video')
+args.add_argument("--filePath", default='./data/testVideo.mp4')
 args = args.parse_args()
 
 output_dir = './output'
@@ -48,7 +50,6 @@ with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence
     if args.mode in ["image"]:
         #read image
         img = cv2.imread(args.filePath)
-        H, W, _ = img.shape
 
         img = process_img(img, face_detection)
 
@@ -65,9 +66,12 @@ with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence
                                        25,
                                        (frame.shape[1], frame.shape[0]))
 
-        while True:
+        while ret:
             frame = process_img(frame, face_detection)
+
+            output_video.write(frame)
 
             ret, frame = cap.read()
 
         cap.release()
+        output_video.release()
